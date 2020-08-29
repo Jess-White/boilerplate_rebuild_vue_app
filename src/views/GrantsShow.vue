@@ -32,14 +32,88 @@
             <h4 class="text-center">Deadline: {{grant.deadline}}</h4>
             <h4 class="text-center">Date Submitted: {{grant.submitted}}</h4>
             <h4 class="text-center">Organization: {{grant.organization_id}}</h4>
+
+            <ul >
+              <li v-for="section in grant.sections" :key="grant.section.id">{{section}}</li>
+            </ul>
+            <div>
+              <button v-on:click="showEditGrantFormMethod()">Edit Grant</button>
+             </div>
           </div>
+
+          <div v-if="showEditGrantForm">
+            <div class="pt100 pb50 bg-dark">
+                <div class="container">
+                    <div class="row align-items-center">
+                    <div class="col-lg-8 mr-auto pb50 ml-auto">
+                        <div class="experience-card clearfix">
+                            <h4>Edit Grant</h4>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="container my-4">
+              <div class="row">
+                <form class="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1" v-on:submit.prevent="updateGrant()">
+                  <h1 class="text-center mb-5">Edit Grant</h1>
+                  <ul>
+                    <li class="text-danger" v-for="error in errors">{{ error }}</li>
+                  </ul>
+
+                  <div class="form-group">
+                    <label>Grant Title: </label>
+                    <input class="form-control" type="text" v-model="grant.title">
+                  </div>
+
+                  <div class="form-group">
+                    <label>RFP Webpage: </label>
+                    <input class="form-control" type="text" v-model="grant.rfp_url">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Deadline: </label>
+                    <input class="form-control" type="text" v-model="grant.deadline">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Purpose: </label>
+                    <input class="form-control" type="text" v-model="grant.purpose">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    Organization
+                    <select v-model="grant.organization_id">
+                      <option value="this.grant.organization_id">{{this.grant.organization_id}}</option>
+                      <option v-bind:value="organization.id" v-for="organization in organizations">{{organization.name}}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    Funding Org
+                    <select v-model="grant.funding_org_id">
+                      <option value="this.grant.funding_org_id">{{this.grant.funding_org_id}}</option>
+                      <option v-bind:value="funding_org.id" v-for="funding_org in funding_orgs">{{funding_org.name}}
+                      </option>
+                    </select>
+                  </div>
+
+                  <input class="btn btn-info m-2" type="submit" value="Save">
+                </form>
+             </div>
+          </div>
+        </div>
 
           <div>
             <div class="card text-center section-editor">
               <div class="card-header">
+                <h1>Method One</h1>
                 <ul class="nav nav-tabs card-header-tabs">
                   <li class="nav-item" v-for="section in grant.sections" >
-                    <span class="nav-link tab-text" :class="{active: section == currentSection}" @click="currentSection = section">{{ section.display_category }}</span>
+                    <!-- <span class="nav-link tab-text" :class="{active: section == currentSection}" @click="currentSection = section">{{ section.display_category }}</span> -->
+                    {{section}}
                   </li>
                 </ul>
               </div>
@@ -52,7 +126,7 @@
                 <div class="form-group">
                   
                   <select class="form-control" v-model="currentBoilerplate">
-                    <option v-for="boilerplate in boilerplates" :value="boilerplate"> {{ boilerplate.title}} </option>
+                    <option v-for="boilerplate in boilerplates" :value="boilerplate"> {{ boilerplate.text}} </option>
                   </select>
                 </div>
               </div>
@@ -67,7 +141,28 @@
             </div>
 
             <div class="col-md-8">
-              <form>
+
+              <form v-on:submit.prevent="createSection()">
+
+                <div class="form-group">
+                  <label>Section Title </label>
+                  <input class="form-control" type="text" v-model="title">
+                </div>
+
+                <div class="form-group">
+                  <label>Section Text </label>
+                  <textarea class="form-control" type="text" v-model="text">{{currentBoilerplate.text}}</textarea>
+                </div>
+
+                <div class="form-group">
+                  <label>Section Sort Order </label>
+                  <input class="form-control" type="integer" v-model="sort_order">
+                </div>
+
+                <input class="btn btn-info" type="submit" value="Add New Section">
+              </form>
+              <!-- <form>
+                <h1>Top Text Box</h1>
                 <h4 class="text-center mb-5">{{ currentSection.display_category }}</h4>
                 <div class="form-group">
                   <textarea class="form-control" v-model="currentSection.content" rows="15"></textarea>
@@ -76,6 +171,7 @@
 
               <h5 class="card-title">{{ currentSection.display_category }}</h5>
               <div>
+                <h1>Bottom Text Box</h1>
                 <textarea 
                 class="card-text" 
                 v-on:input="currentSection.changed = true"  
@@ -83,13 +179,13 @@
                 rows="15" 
                 >
                 </textarea>
-              </div>
+              </div> -->
 
-              <div>
+              <!-- <div>
                 <button class="btn" :class="{'btn-danger': currentSection.changed, 'btn-primary': !currentSection.changed}" @click="updateSection(currentSection)">
                   Save This Section
                 </button>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -111,8 +207,8 @@
 
       </div>
     </div>
-  </div>
-</div> 
+  </div> 
+</div>
 </template>
 
 <style scoped>
@@ -145,11 +241,16 @@
           deadline: "",
           submitted: "",
           successful: "",
-          purpose: ""
+          purpose: "",
+          errors: [],
+          sections: [],
         },
+        showEditGrantForm: false,
+        organizations: [],
+        funding_orgs: [],
         sections: [],
         currentSection: {text: ""},
-        currentBoilerplate: {},
+        currentBoilerplate: "",
         boilerplates: []
   };
 },
@@ -166,15 +267,75 @@ created: function() {
       this.boilerplates = response.data;
       console.log(response.data);
     });
+  axios
+  .get("/api/organizations/")
+  .then(response => {
+    this.organizations = response.data;
+    console.log(response.data);
+  });
+  axios
+  .get("/api/funding_orgs/")
+  .then(response => {
+    this.funding_orgs = response.data;
+    console.log(response.data);
+  });
 },
 methods: {
   destroyGrant: function() {
     axios
       .delete("/api/grants/" + this.$route.params.id)
       .then(response => {
-        this.$router.push("/");
+        this.$router.push("/grants");
       });
   },
+  updateGrant: function() {
+    var clientParams = {
+      title: this.grant.title,
+      organization_id: this.grant.organization_id,
+      funding_org_id: this.grant.funding_org_id,
+      rfp_url: this.grant.rfp_url,
+      deadine: this.grant.deadline,
+      purpose: this.grant.purpose,
+    };
+  const jwt = localStorage.getItem("jwt")
+  axios
+  .patch("/api/grants/" + this.$route.params.id, clientParams, {
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
+  })
+  .then(response => {
+    this.$router.push("/grants/");
+  }).catch(error => {
+    if (error.response.status === 401) {
+      this.$router.push("/login/");
+    }
+    this.grant.errors = error.response.data.errors;
+  });
+  },
+  showEditGrantFormMethod: function () {
+    this.showEditGrantForm = !this.showEditGrantForm;
+  },
+  createSection: function() {
+    var clientParams = {
+      grant_id: this.grant.id,
+      title: this.title,
+      text: this.text,
+      sort_order: this.sort_order
+    };
+    axios
+        .post("/api/sections/", clientParams)
+        .then(response => {
+          this.sections.push(response.data);
+          this.title = "";
+          this.text = "";
+          this.sort_order = "";
+        }).catch(error => {
+          this.errors = error.response.data.
+            errors;
+          this.status = error.response.status;
+        });
+    },
   updateSection: function(inputSection) {
     var clientParams = { 
       content: inputSection.content
@@ -189,17 +350,17 @@ methods: {
   },
   addBoilerplate: function(inputSection) {
     var clientParams = {
-      content: inputSection.content
+      text: inputSection.text
     };
 
     axios
       .patch("/api/sections/" + inputSection.id, clientParams)
       .then(response => {
         console.log(response.data);
-        if (this.currentSection.content === null) {
-          this.currentSection.content = this.currentBoilerplate.boilerplate_text;
+        if (this.currentSection.text === null) {
+          this.currentSection.text = this.currentBoilerplate.text;
         } else {
-          this.currentSection.content += this.currentBoilerplate.boilerplate_text;
+          this.currentSection.text += this.currentBoilerplate.text;
         }
       });
   },

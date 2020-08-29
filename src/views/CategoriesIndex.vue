@@ -135,7 +135,6 @@
         name: this.name,
         organization_id: this.organization_id
       };
-      console.log(this.organization_id);
       axios
         .post("/api/categories/", clientParams)
         .then(response => {
