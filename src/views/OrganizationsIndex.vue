@@ -65,44 +65,38 @@
 </style>
 
 <script>
-  var axios = require("axios");
+var axios = require("axios");
 
-  export default {
-    data: function() {
-      return {
-        id: "",
-        name: "",
-        errors: [],
-
-        organizations: []
-
-      };
-    },
-  created: function() {
-    axios
-    .get("/api/organizations/")
-    .then(response => {
+export default {
+  data: function () {
+    return {
+      id: "",
+      name: "",
+      errors: [],
+      organizations: [],
+    };
+  },
+  created: function () {
+    axios.get("/api/organizations/").then((response) => {
       this.organizations = response.data;
     });
   },
   methods: {
-    createOrganization: function() {
-        var clientParams = {
-        name: this.name
+    createOrganization: function () {
+      var clientParams = {
+        name: this.name,
       };
 
       axios
         .post("/api/organizations/", clientParams)
-        .then(response => {
+        .then((response) => {
           this.$router.push("/organizations");
-        }).catch(error => {
-          this.errors = error.response.data.
-            errors;
+        })
+        .catch((error) => {
+          this.errors = error.response.data.errors;
           this.status = error.response.status;
         });
-      }
-    }
-  };
-
-
+    },
+  },
+};
 </script>
