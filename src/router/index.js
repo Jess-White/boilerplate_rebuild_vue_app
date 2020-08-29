@@ -6,35 +6,35 @@ import Login from '../views/Login.vue';
 import Logout from '../views/Logout.vue';
 // import About from '../views/About.vue';
 
-// import GrantsIndex from '../views/GrantsIndex.vue';
-// import GrantsFinalizeShow from '../views/GrantsFinalizeShow.vue';
-// import GrantsShow from '../views/GrantsShow.vue';
+import GrantsIndex from '../views/GrantsIndex.vue';
+import GrantsFinalizeShow from '../views/GrantsFinalizeShow.vue';
+import GrantsShow from '../views/GrantsShow.vue';
 // import GrantsEdit from '../views/GrantsEdit.vue';
 
 // import ReportsNew from '../views/ReportsNew.vue';
-// import ReportsIndex from '../views/ReportsIndex.vue';
+import ReportsIndex from '../views/ReportsIndex.vue';
 // import ReportsShow from '../views/ReportsShow.vue';
 // import ReportsEdit from '../views/ReportsEdit.vue';
 
 import BiosIndex from '../views/BiosIndex.vue';
 // import BiosEdit from '../views/BiosEdit.vue';
-// import BiosShow from '../views/BiosShow.vue';
+import BiosShow from '../views/BiosShow.vue';
 
 import BoilerplatesIndex from '../views/BoilerplatesIndex.vue';
 // import BoilerplatesEdit from '../views/BoilerplatesEdit.vue';
-// import BoilerplatesShow from '../views/BoilerplatesShow.vue';
+import BoilerplatesShow from '../views/BoilerplatesShow.vue';
 
 import CategoriesIndex from '../views/CategoriesIndex.vue';
 // import CategoriesEdit from '../views/CategoriesEdit.vue';
-// import CategoriesShow from '../views/CategoriesShow.vue';
+import CategoriesShow from '../views/CategoriesShow.vue';
 
 import FundingOrgsIndex from '../views/FundingOrgsIndex.vue';
 // import FundingOrgsEdit from '../views/FundingOrgsEdit.vue';
-// import FundingOrgsShow from '../views/FundingOrgsShow.vue';
+import FundingOrgsShow from '../views/FundingOrgsShow.vue';
 
 import OrganizationsIndex from '../views/OrganizationsIndex.vue';
 // import OrganizationsEdit from '../views/OrganizationsEdit.vue';
-// import OrganizationsShow from '../views/OrganizationsShow.vue';
+import OrganizationsShow from '../views/OrganizationsShow.vue';
 
 Vue.use(VueRouter);
 
@@ -43,84 +43,69 @@ const routes = [
 
 	{ path: '/login', name: 'login', component: Login },
 	{ path: '/logout', name: 'logout', component: Logout },
+
 	{ path: '/', name: 'root', component: Login },
 
-	// { path: '/grants', name: 'grants-index', component: GrantsIndex },
-	// { path: '/grants/:id', name: 'grants-show', component: GrantsShow },
-	// {
-	//   path: '/grants/:id/finalize',
-	//   name: 'grants-finalize-show',
-	//   component: GrantsFinalizeShow,
-	// },
+	{ path: '/grants', name: 'grants-index', component: GrantsIndex },
+	{ path: '/grants/:id', name: 'grants-show', component: GrantsShow },
+	{
+		path: '/grants/:id/finalize',
+		name: 'grants-finalize-show',
+		component: GrantsFinalizeShow,
+	},
 
-	// { path: '/reports', name: 'reports-index', component: ReportsIndex },
-	// { path: '/reports/new', name: 'reports-new', component: ReportsNew },
-	// { path: '/reports/:id', name: 'reports-show', component: ReportsShow },
-	// { path: '/reports/:id/edit', name: 'reports-edit', component: ReportsEdit },
+	{ path: '/reports', name: 'reports-index', component: ReportsIndex },
+	// {path: '/reports/new', name: 'reports-new', component: ReportsNew},
+	// {path: '/reports/:id', name: 'reports-show', component: ReportsShow},
+	// {path: '/reports/:id/edit', name: 'reports-edit', component: ReportsEdit},
 
 	{ path: '/categories', name: 'categories-index', component: CategoriesIndex },
-	// {
-	//   path: '/categories/:id',
-	//   name: 'categories-show',
-	//   component: CategoriesShow,
-	// },
-	// {
-	//   path: '/categories/:id/edit',
-	//   name: 'categories-edit',
-	//   component: CategoriesEdit,
-	// },
+	{
+		path: '/categories/:id',
+		name: 'categories-show',
+		component: CategoriesShow,
+	},
+	// {path: '/categories/:id/edit', name: 'categories-edit', component: CategoriesEdit},
 
 	{
 		path: '/organizations',
 		name: 'organizations-index',
 		component: OrganizationsIndex,
 	},
-	// {
-	//   path: '/organizations/:id',
-	//   name: 'organizations-show',
-	//   component: OrganizationsShow,
-	// },
-	// {
-	//   path: '/organizations/:id/edit',
-	//   name: 'organizations-edit',
-	//   component: OrganizationsEdit,
-	// },
+	{
+		path: '/organizations/:id',
+		name: 'organizations-show',
+		component: OrganizationsShow,
+	},
+	// {path: '/organizations/:id/edit', name: 'organizations-edit', component: OrganizationsEdit},
 
 	{
-		path: '/funding-orgs',
+		path: '/funding_orgs',
 		name: 'funding-orgs-index',
 		component: FundingOrgsIndex,
 	},
-	// {
-	//   path: '/funding-orgs/:id',
-	//   name: 'funding-orgs-show',
-	//   component: FundingOrgsShow,
-	// },
-	// {
-	//   path: '/funding-orgs/:id/edit',
-	//   name: 'funding-orgs-edit',
-	//   component: FundingOrgsEdit,
-	// },
+	{
+		path: '/funding_orgs/:id',
+		name: 'funding-orgs-show',
+		component: FundingOrgsShow,
+	},
+	// {path: '/funding-orgs/:id/edit', name: 'funding-orgs-edit', component: FundingOrgsEdit},
 
 	{ path: '/bios', name: 'bios-index', component: BiosIndex },
-	// { path: '/bios/:id', name: 'bios-show', component: BiosShow },
-	// { path: '/bios/:id/edit', name: 'bios-edit', component: BiosEdit },
+	{ path: '/bios/:id', name: 'bios-show', component: BiosShow },
+	// {path: '/bios/:id/edit', name: 'bios-edit', component: BiosEdit},
 
 	{
 		path: '/boilerplates',
 		name: 'boilerplates-index',
 		component: BoilerplatesIndex,
 	},
-	// {
-	//   path: '/boilerplates/:id',
-	//   name: 'boilerplates-show',
-	//   component: BoilerplatesShow,
-	// },
-	// {
-	//   path: '/boilerplates/:id/edit',
-	//   name: 'boilerplates-edit',
-	//   component: BoilerplatesEdit,
-	// },
+	{
+		path: '/boilerplates/:id',
+		name: 'boilerplates-show',
+		component: BoilerplatesShow,
+	},
+	// {path: '/boilerplates/:id/edit', name: 'boilerplates-edit', component: BoilerplatesEdit},
 ];
 
 const router = new VueRouter({
