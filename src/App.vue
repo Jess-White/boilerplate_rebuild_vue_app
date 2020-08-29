@@ -18,7 +18,7 @@
                           
 
                             <a href="index.html">
-                                <font-awesome-icon :icon="['far', 'edit']" class="fa-10x text-info" /><br><br>
+                                <!-- <font-awesome-icon :icon="['far', 'edit']" class="fa-10x text-info" /><br><br> -->
                                 
                             </a><br>
                             
@@ -35,11 +35,11 @@
 
                                 <li><router-link to="/boilerplates">Boilerplates</router-link></li>
 
-                                <li><router-link to="/bios">View All Bios</router-link></li>
+                                <li><router-link to="/bios">Bios</router-link></li>
 
                                 <li><router-link to="/organizations">Organizations</router-link></li>
 
-                                <li><router-link to="/funding-orgs">Funding Orgs</router-link></li>
+                                <li><router-link to="/funding_orgs">Funding Orgs</router-link></li>
 
                                 <li><router-link to="/categories">Categories</router-link></li>
 

@@ -6,29 +6,64 @@
             <div class="row align-items-center">
             <div class="col-lg-8 mr-auto pb50 ml-auto">
                 <h2 class="h1 font300 text-white">
-                    We're a small <span class="text-primary">Archi</span>tecture Studio.
+                    Add a New <span class="text-primary">Bio</span> and View Saved Bios.
                 </h2>
                 <p class="lead text-white-gray">
-                    There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour
+                    Create new bio or see bios index.
                 </p>
                 <div class="experience-card clearfix">
                     <div class="experience-inner">
                         <h3 class="experience-text">06</h3>
                     </div> 
-                    <h4>Bios Library</h4>
+                    <h4>Bios Index</h4>
                 </div>
             </div>
         </div>
         </div>
     </div>
 
+    <div class="row my-4">
+      <form class="col-6 offset-3"
+        v-on:submit.prevent="createBio()">
+        <h1 class="text-center mb-5">New Bio</h1>
+
+        <ul>
+          <li class="text-danger" v-for="error in errors">{{ error }}</li>
+        </ul>
+
+        <div class="form-group">
+          <label>First Name: </label>
+          <input class="form-control" type="text" v-model="firstName">
+        </div>
+
+        <div class="form-group">
+          <label>Last Name: </label>
+          <input class="form-control" type="text" v-model="lastName">
+        </div>
+
+        <div class="form-group">
+          <label>Title: </label>
+          <input class="form-control" type="text" v-model="title">
+        </div>
+
+         <div class="form-group">
+          <label>Bio Text: </label>
+          <input class="form-control" type="text" v-model="bio">
+        </div>
+
+        <div class="form-group">
+          <label>Organization: </label>
+          <input class="form-control" type="text" v-model="organizationId">
+        </div>
+        
+        <input class="btn btn-info" type="submit" value="Add New Bio">
+      </form>
+    </div>
+
     <div class="container pt100 pb50">
 
     <h1 class="text-center mb-5">Bios</h1>
     <div class="row">
-
-
-
       <div class="col-md-4 mb50" v-for="bio in bios">
 
       <router-link v-bind:to="'/bios/' + bio.id">
@@ -39,7 +74,6 @@
 
           <div class="card-body text-info">
             <h5 class="card-name">{{bio.first_name}} {{bio.last_name}}</h5>
-                        <!-- need to add organization -->
             <p class="card-text">{{bio.text}}</p>
             <p class="card-text">{{bio.organization_id}}</p>
           </div>
@@ -68,6 +102,13 @@
   export default {
     data: function() {
       return {
+        id: "",
+        firstName: "",
+        lastName: "",
+        title: "",
+        bio: "",
+        organizationId: "",
+        errors: [],
         bios: []
       };
     },
@@ -78,7 +119,26 @@
       this.bios = response.data;
     });
   },
-  methods: {}
+  methods: {
+      createBio: function() {
+        var clientParams = {
+        first_name: this.firstName,
+        last_name: this.lastName,
+        title: this.title,
+        bio: this.bio,
+        organization_id: this.organizationId
+      };
+
+      axios
+        .post("/api/bios/", clientParams)
+        .then(response => {
+          this.$router.push("/bios");
+        }).catch(error => {
+          this.errors = error.response.data.
+            errors;
+        });
+    }
+  }
 };
 
 

@@ -15,7 +15,7 @@
                     <div class="experience-inner">
                         <h3 class="experience-text">08</h3>
                     </div> 
-                    <h4>Organizations Library</h4>
+                    <h4>Organizations</h4>
                 </div>
             </div>
         </div>
@@ -42,7 +42,6 @@
       </form>
     </div>
 
-
     <div class="container my-4">
       <h1 class="text-center mb-5">Organizations</h1>
       <div class="row">
@@ -54,6 +53,31 @@
               </div>
             </div>
           </router-link>
+          <div>
+            <button v-on:click="organization.showEditOrganizationForm = !organization.showEditOrganizationForm">Edit Organization</button>
+
+            <div v-if="organization.showEditOrganizationForm">
+                  <div class="container my-4">
+                    <div class="row">
+                      <form class="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1" v-on:submit.prevent="updateOrganization()">
+                        <h1 class="text-center mb-5">Edit Organization</h1>
+                        <ul>
+                          <li class="text-danger" v-for="error in errors">{{ error }}</li>
+                        </ul>
+
+                        <div class="form-group">
+                          <label>Organization Name: </label>
+                          <input class="form-control" type="text" v-model="organization.name">
+                        </div>
+
+                        <input class="btn btn-info m-2" type="submit" value="Save">
+                        <button class="btn btn-info m-2" v-on:click="destroyOrganization()">Delete</button>
+                      </form>
+
+                    </div>
+                  </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -70,13 +94,12 @@
   export default {
     data: function() {
       return {
+        organizations: [],
         id: "",
         name: "",
-        errors: [],
-
-        organizations: []
-
+        errors: []
       };
+      showEditOrganizationForm: false
     },
   created: function() {
     axios
@@ -100,9 +123,37 @@
             errors;
           this.status = error.response.status;
         });
+      },
+    destroyOrganization: function() {
+      axios
+        .delete("/api/organizations/" + this.$route.params.id)
+        .then(response => {
+          this.$router.push("/organizations/");
+        });
+    },
+    updateOrganization: function() {
+      var clientParams = {
+        name: this.organization.name
+      };
+
+        const jwt = localStorage.getItem("jwt")
+        axios
+        .patch("/api/organizations/" + this.$route.params.id, clientParams, {
+          headers: {
+            "Authorization": `Bearer ${jwt}`
+          }
+        })
+        .then(response => {
+          this.$router.push("/organizations/");
+        }).catch(error => {
+          if (error.response.status === 401) {
+            this.$router.push("/login/");
+          }
+          this.errors = error.response.data.errors;
+        });
+        }
       }
-    }
-  };
+    };
 
 
 </script>
