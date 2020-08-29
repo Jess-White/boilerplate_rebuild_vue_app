@@ -21,6 +21,60 @@
         </div>
         </div>
     </div>
+
+    <div class="container my-4">
+
+      <div class="row mb-4"></div>
+      <form class="col-6 offset-3"
+      v-on:submit.prevent="createGrant()">
+        <h1 class="text-center mb-5">New Grant</h1>
+
+        <ul>
+          <li class="text-danger" v-for="error in errors">{{ error }}</li>
+        </ul>
+
+        <div class="form-group">
+          <label>Grant Title </label>
+          <input class="form-control" type="text" v-model="title">
+        </div>
+
+        <div class="form-group">
+          <label>RFP Webpage</label>
+          <input class="form-control" type="text" v-model="rfp_url">
+        </div>
+
+        <div class="form-group">
+          <label>Deadline </label>
+          <input class="form-control" type="text" v-model="deadline">
+        </div>
+
+        <div class="form-group">
+          <label>Purpose </label>
+          <input class="form-control" type="text" v-model="deadline">
+        </div>
+
+        <div class="form-group col-md-6">
+          Organization
+          <select v-model="organization_id">
+            <option value="">Select an Organization</option>
+            <option v-bind:value="organization.id" v-for="organization in organizations">{{organization.name}}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group col-md-6">
+          Funding Org
+          <select v-model="funding_org_id">
+            <option value="">Select a Funding Org</option>
+            <option v-bind:value="funding_org.id" v-for="funding_org in funding_orgs">{{funding_org.name}}
+            </option>
+          </select>
+        </div>
+
+        <input class="btn btn-info" type="submit" value="Add New Grant">
+      </form>
+    </div>
+
     <div class="container">
       
       <h1 class="text-center my-5">Grants</h1>
@@ -58,7 +112,9 @@
   export default {
     data: function() {
       return {
-        grants: []
+        grants: [],
+        organizations: [],
+        funding_orgs: []
       };
     },
   created: function() {
@@ -75,8 +131,45 @@
           alert("server error")
         }
       });
+    axios
+    .get("/api/organizations/")
+    .then(response => {
+      this.organizations = response.data;
+      console.log(response.data);
+    });
+    axios
+    .get("/api/funding_orgs/")
+    .then(response => {
+      this.funding_orgs = response.data;
+      console.log(response.data);
+    });
   },
   methods: {
+      createGrant: function() {
+          var clientParams = {
+          title: this.title,
+          organization_id: this.organization_id,
+          funding_org_id: this.funding_org_id,
+          rfp_url: this.rfp_url,
+          deadine: this.deadline,
+          purpose: this.purpose
+        };
+        axios
+          .post("/api/grants/", clientParams)
+          .then(response => {
+            this.grants.push(response.data);
+            this.title = "";
+            this.organization_id = "";
+            this.funding_org_id = "";
+            this.rfp_url = "";
+            this.deadline = "";
+            this.purpose = "";
+          }).catch(error => {
+            this.errors = error.response.data.
+              errors;
+            this.status = error.response.status;
+          });
+        },
       destroyGrant: function() {
         axios
           .delete("/api/grants/" + this.$route.params.id)
