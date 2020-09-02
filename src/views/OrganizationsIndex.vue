@@ -89,38 +89,20 @@
 </style>
 
 <script>
-<<<<<<< HEAD
 var axios = require("axios");
 
 export default {
   data: function () {
     return {
+      organizations: [],
       id: "",
       name: "",
       errors: [],
-      organizations: [],
     };
+    showEditOrganizationForm: false;
   },
   created: function () {
     axios.get("/api/organizations/").then((response) => {
-=======
-  var axios = require("axios");
-
-  export default {
-    data: function() {
-      return {
-        organizations: [],
-        id: "",
-        name: "",
-        errors: []
-      };
-      showEditOrganizationForm: false
-    },
-  created: function() {
-    axios
-    .get("/api/organizations/")
-    .then(response => {
->>>>>>> be8b3f928188833b4b507a803bb1e04f67ffd2b6
       this.organizations = response.data;
     });
   },
@@ -139,43 +121,36 @@ export default {
           this.errors = error.response.data.errors;
           this.status = error.response.status;
         });
-<<<<<<< HEAD
     },
-  },
-};
-=======
-      },
-    destroyOrganization: function() {
+    destroyOrganization: function () {
       axios
         .delete("/api/organizations/" + this.$route.params.id)
-        .then(response => {
+        .then((response) => {
           this.$router.push("/organizations/");
         });
     },
-    updateOrganization: function() {
+    updateOrganization: function () {
       var clientParams = {
-        name: this.organization.name
+        name: this.organization.name,
       };
 
-        const jwt = localStorage.getItem("jwt")
-        axios
+      const jwt = localStorage.getItem("jwt");
+      axios
         .patch("/api/organizations/" + this.$route.params.id, clientParams, {
           headers: {
-            "Authorization": `Bearer ${jwt}`
-          }
+            Authorization: `Bearer ${jwt}`,
+          },
         })
-        .then(response => {
+        .then((response) => {
           this.$router.push("/organizations/");
-        }).catch(error => {
+        })
+        .catch((error) => {
           if (error.response.status === 401) {
             this.$router.push("/login/");
           }
           this.errors = error.response.data.errors;
         });
-        }
-      }
-    };
-
-
->>>>>>> be8b3f928188833b4b507a803bb1e04f67ffd2b6
+    },
+  },
+};
 </script>

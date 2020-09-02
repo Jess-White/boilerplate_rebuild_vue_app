@@ -114,15 +114,15 @@ const router = new VueRouter({
 	routes,
 });
 
-router.beforeEach((to, from, next) => {
-	if (to.name === 'login' || to.name === 'users-new') {
-		return next();
-	}
-	const jwt = localStorage.getItem('jwt');
-	if (jwt) {
-		return next();
-	}
-	next('/login/');
-});
+// router.beforeEach((to, from, next) => {
+// 	if (to.name === 'login' || to.name === 'users-new') {
+// 		return next();
+// 	}
+// 	const jwt = localStorage.getItem('jwt');
+// 	if (jwt) {
+// 		return next();
+// 	}
+// 	next('/login/');
+// });
 
 export default router;
