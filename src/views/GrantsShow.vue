@@ -125,7 +125,7 @@
 
                 <div class="form-group">
                   
-                  <select class="form-control" v-model="currentBoilerplate">
+                  <select class="form-control" v-model="currentBoilerplate" @change="handleChange">
                     <option v-for="boilerplate in boilerplates" :value="boilerplate"> {{ boilerplate.text}} </option>
                   </select>
                 </div>
@@ -151,7 +151,9 @@
 
                 <div class="form-group">
                   <label>Section Text </label>
-                  <textarea class="form-control" type="text" v-model="text">{{currentBoilerplate.text}}</textarea>
+                  <textarea class="form-control" type="text" v-model="text"></textarea>
+                  {{text}}
+                  {{title}}
                 </div>
 
                 <div class="form-group">
@@ -251,7 +253,9 @@
         sections: [],
         currentSection: {text: ""},
         currentBoilerplate: "",
-        boilerplates: []
+        boilerplates: [],
+        text: "",
+        title: ""
   };
 },
 created: function() {
@@ -326,7 +330,7 @@ methods: {
     axios
         .post("/api/sections/", clientParams)
         .then(response => {
-          this.sections.push(response.data);
+          this.grant.sections.push(response.data);
           this.title = "";
           this.text = "";
           this.sort_order = "";
@@ -347,6 +351,9 @@ methods: {
         console.log(response.data);
         this.currentSection.changed = false;
       });
+  },
+  handleChange: function() {
+    this.text += this.currentBoilerplate.text;
   },
   addBoilerplate: function(inputSection) {
     var clientParams = {

@@ -27,12 +27,12 @@
 
      <div class="row" id="pdfMaterials">
        <div class="col-md-6 offset-md-3">
-        <h4 class="text-center">Grant Name: {{grant.name}}</h4>
+        <h4 class="text-center">Grant Name: {{grant.title}}</h4>
         <h4 class="text-center">Purpose: {{grant.purpose}}</h4>
-        <h4 class="text-center">Funding Organization: {{grant.funding_org}}</h4>
-        <h4 class="text-center">Funding Organization RFP Webpage: {{grant.funding_org_rfp_webpage}}</h4>        
+        <h4 class="text-center">Funding Organization: {{grant.funding_org_name}}</h4>
+        <h4 class="text-center">Funding Organization RFP Webpage: {{grant.rfp_url}}</h4>        
         <h4 class="text-center">Deadline: {{grant.deadline}}</h4>
-        <h4 class="text-center">Date Submitted: {{grant.date_submitted}}</h4>
+        <h4 class="text-center">Date Submitted: {{grant.submitted}}</h4>
         <h4 class="text-center">Organization: {{grant.organization_id}}</h4>
        </div>
      </div>
@@ -42,21 +42,70 @@
           <div class="card-header">
               <div class="nav-item" v-for="section in grant.sections" >
                   <div class="card-body">
-                    <h5 class="card-title">{{ section.display_category }}</h5>
+                    <h5 class="card-title">{{ section.id }}</h5>
+                    <h5 class="card-title">{{ section.title }}</h5>
+                    <h5 class="card-title">{{ section.text }}</h5>
                     <div class="form-group">
                       <textarea 
                         class="form-control" 
-                        v-model="section.content" 
+                        v-model="section.text" 
                         
                         rows="7"
                       >
                       </textarea>
                     </div>
-                    <button class="btn btn-info m-2" v-on:click="updateSection(section)">Save Section</button>
+
+                    <div>
+                      <button v-on:click="showEditSectionFormMethod(section)">Edit Section</button>
+                     </div>
+
+                     <div v-if="section.showEditSectionForm">
+                      <div class="pt100 pb50 bg-dark">
+                          <div class="container">
+                            <div class="row align-items-center">
+                              <div class="col-lg-8 mr-auto pb50 ml-auto">
+                                <div class="experience-card clearfix">
+                                  <h4>Edit Section</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      <div class="container my-4">
+                        <div class="row">
+                          <form class="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1" v-on:submit.prevent="updateSection()">
+                            <h1 class="text-center mb-5">Edit Section</h1>
+                            <ul>
+                              <li class="text-danger" v-for="error in errors">{{ error }}</li>
+                            </ul>
+
+                            <div class="form-group">
+                              <label>Section Title: </label>
+                              <input class="form-control" type="text" v-model="section.title">
+                            </div>
+
+                            <div class="form-group">
+                              <label>Section Text: </label>
+                              <input class="form-control" type="text" v-model="section.text">
+                            </div>
+
+                            <div class="form-group">
+                              <label>Section Sort Order: </label>
+                              <input class="form-control" type="text" v-model="section.sort_order">
+                            </div>
+
+                            <button class="btn btn-info m-2" v-on:click="updateSection(section)">Save Section</button>
+
+                          </form>
+
+                    </div>
+
                   </div>
               </div>
           </div>
         </div>
+      </div>
 
        </div>
 
@@ -75,7 +124,7 @@
       </div>
      </div> 
   </div>
-
+</div>
 </template>
 
 <style>
@@ -93,34 +142,59 @@
       return {
         grant: {
           id: "",
-          name: "",
-          purpose: "",
-          fundingOrg: "",
-          fundingOrgWebsite: "",
-          fundingOrgRfpWebpage: "",
+          organization_id: "",
+          title: "",
+          funding_org_id: "",
+          funding_org_url: "",
+          funding_org_name: "",
+          rfp_url: "",
           deadline: "",
-          dateSubmitted: "",
-          createdAt: "",
-          updatedAt: "",
-          organizationId: "",
+          submitted: "",
+          successful: "",
+          purpose: "",
           errors: [],
-          sections: []
+          sections: [],
         },
         currentBoilerplate: {},
-        boilerplates: []
+        boilerplates: [],
+        organizations: [],
+        funding_orgs: [],
+        sections: [],
+        currentSection: {text: ""},
+        currentBoilerplate: "",
+        boilerplates: [],
+        id: "",
+        sort_order: "",
+        text: "",
+        title: ""
   };
 },
 created: function() {
   axios 
     .get("/api/grants/" + this.$route.params.id)
     .then(response => {
-      this.grant = response.data
+      response.data.sections.forEach(section => {
+        section.showEditSectionForm = false;
+      })
+    this.grant = response.data;
     });
   axios
     .get("/api/boilerplates")
     .then(response => {
       this.boilerplates = response.data;
     });
+  axios
+  .get("/api/organizations/")
+  .then(response => {
+    this.organizations = response.data;
+    console.log(response.data);
+  });
+  axios
+  .get("/api/funding_orgs/")
+  .then(response => {
+    this.funding_orgs = response.data;
+    console.log(response.data);
+  });
 },
 methods: {
   destroyGrant: function() {
@@ -131,13 +205,15 @@ methods: {
       });
   },
 
-  updateSection: function(inputSection) {
+  updateSection: function(section) {
     var clientParams = { 
-      content: inputSection.content
+      title: section.title,
+      text: section.text,
+      sort_order: section.sort_order
     };
 
     axios
-    .patch("/api/sections/" + inputSection.id, clientParams)
+    .patch("/api/sections/" + section.id, clientParams)
     .then(response => {
       console.log(response.data);
     });
@@ -150,19 +226,6 @@ methods: {
 
     this.$router.push("/grants"); 
   },
-
-  addBoilerplate: function(inputSection) {
-    var clientParams = {
-      content: inputSection.content
-    };
-
-    axios
-      .patch("/api/sections/" + inputSection.id, clientParams)
-      .then(response => {
-        console.log(response.data);
-        this.currentSection.content = this.currentSection.content + this.currentBoilerplate.boilerplate_text;
-      });
-    },
 
   finalizeGrant: function() {
     axios 
@@ -188,6 +251,10 @@ methods: {
     //   doc.fromHTML(document.getElementById('pdfMaterials'), 20, 20);
     //   doc.save('grant.pdf');
     // },
+
+    showEditSectionFormMethod: function(section) {
+    section.showEditSectionForm = !section.showEditSectionForm;
+  },
 },
 watch: {
   $route: function() {
