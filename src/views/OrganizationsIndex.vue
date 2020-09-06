@@ -89,71 +89,68 @@
 </style>
 
 <script>
-  var axios = require("axios");
+var axios = require("axios");
 
-  export default {
-    data: function() {
-      return {
-        organizations: [],
-        id: "",
-        name: "",
-        errors: []
-      };
-      showEditOrganizationForm: false
-    },
-  created: function() {
-    axios
-    .get("/api/organizations/")
-    .then(response => {
+export default {
+  data: function () {
+    return {
+      organizations: [],
+      id: "",
+      name: "",
+      errors: [],
+    };
+    showEditOrganizationForm: false;
+  },
+  created: function () {
+    axios.get("/api/organizations/").then((response) => {
       this.organizations = response.data;
     });
   },
   methods: {
-    createOrganization: function() {
-        var clientParams = {
-        name: this.name
+    createOrganization: function () {
+      var clientParams = {
+        name: this.name,
       };
 
       axios
         .post("/api/organizations/", clientParams)
-        .then(response => {
+        .then((response) => {
           this.$router.push("/organizations");
-        }).catch(error => {
-          this.errors = error.response.data.
-            errors;
+        })
+        .catch((error) => {
+          this.errors = error.response.data.errors;
           this.status = error.response.status;
         });
-      },
-    destroyOrganization: function() {
+    },
+    destroyOrganization: function () {
       axios
         .delete("/api/organizations/" + this.$route.params.id)
-        .then(response => {
+        .then((response) => {
           this.$router.push("/organizations/");
         });
     },
-    updateOrganization: function() {
+    updateOrganization: function () {
       var clientParams = {
-        name: this.organization.name
+        name: this.organization.name,
       };
 
-        const jwt = localStorage.getItem("jwt")
-        axios
+      const jwt = localStorage.getItem("jwt");
+      axios
         .patch("/api/organizations/" + this.$route.params.id, clientParams, {
           headers: {
-            "Authorization": `Bearer ${jwt}`
-          }
+            Authorization: `Bearer ${jwt}`,
+          },
         })
-        .then(response => {
+        .then((response) => {
           this.$router.push("/organizations/");
-        }).catch(error => {
+        })
+        .catch((error) => {
           if (error.response.status === 401) {
             this.$router.push("/login/");
           }
           this.errors = error.response.data.errors;
         });
-        }
-      }
-    };
-
-
+    },
+  },
+};
 </script>
