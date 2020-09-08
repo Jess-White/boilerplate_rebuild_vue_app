@@ -141,27 +141,26 @@
 
 
 <script>
-var axios = require('axios')
+var axios = require("axios");
 
-  export default {
-    data: function() {
-      return {
-        userEmail: ""
-      };
-    },
-    created: function() {
-      const email = localStorage.getItem("userEmail");
-      if (email) {
-        this.userEmail = email;
-      }
-      const jwt = localStorage.getItem("jwt");
-      if (jwt) {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + jwt;
-      }
-      console.log(axios.defaults.headers)
+export default {
+  data: function () {
+    return {
+      userEmail: "",
+    };
+  },
+  created: function () {
+    const email = localStorage.getItem("userEmail");
+    if (email) {
+      this.userEmail = email;
     }
-  }
-
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      axios.defaults.headers.common["Authorization"] = "Bearer " + jwt;
+    }
+    //   console.log(axios.defaults.headers)
+  },
+};
 </script>
 
 

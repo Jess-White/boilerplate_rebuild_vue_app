@@ -31,7 +31,7 @@
             <h4 class="text-center">Date Submitted: {{grant.submitted}}</h4>
             <h4 class="text-center">Organization: {{grant.organization_id}}</h4>
             <ul>
-              <li v-for="section in grant.sections" :key="grant.section.id">{{section}}</li>
+              <li v-for="section in grant.sections" :key="section.id">{{section}}</li>
             </ul>
             <div>
               <button v-on:click="showEditGrantFormMethod()">Edit Grant</button>
@@ -219,12 +219,13 @@ export default {
       boilerplates: [],
       text: "",
       title: "",
+      sort_order: "",
     };
   },
   created: function () {
     axios.get("/api/grants/" + this.$route.params.id).then((response) => {
       this.grant = response.data;
-      // this.currentSection = response.data.sections[0];
+      console.log(response.data);
     });
     axios.get("/api/boilerplates").then((response) => {
       this.boilerplates = response.data;
