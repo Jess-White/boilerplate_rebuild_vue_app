@@ -25,12 +25,13 @@
           <div class="col-md-6 offset-md-3 mb-4">
             <h4 class="text-center">Grant Name: {{grant.title}}</h4>
             <h4 class="text-center">Purpose: {{grant.purpose}}</h4>
-            <h4 class="text-center">Funding Organization: {{grant.funding_org}}</h4>
+            <h4 class="text-center">Funding Organization: {{grant.funding_org_name}}</h4>
             <h4 class="text-center">Funding Organization RFP Webpage: {{grant.rfp_url}}</h4>        
             <h4 class="text-center">Deadline: {{grant.deadline}}</h4>
             <h4 class="text-center">Date Submitted: {{grant.submitted}}</h4>
             <h4 class="text-center">Organization: {{grant.organization_id}}</h4>
-            <ul>
+
+            <ul >
               <li v-for="section in grant.sections" :key="section.id">{{section}}</li>
             </ul>
             <div>
@@ -210,22 +211,22 @@ export default {
         errors: [],
         sections: [],
       },
-      showEditGrantForm: false,
-      organizations: [],
-      funding_orgs: [],
-      sections: [],
       currentSection: { text: "" },
       currentBoilerplate: "",
       boilerplates: [],
       text: "",
       title: "",
       sort_order: "",
+      showEditGrantForm: false,
     };
   },
   created: function () {
     axios.get("/api/grants/" + this.$route.params.id).then((response) => {
       this.grant = response.data;
       console.log(response.data);
+      console.log(this.grant);
+      console.log(this.grant.sections);
+      // this.currentSection = response.data.sections[0];
     });
     axios.get("/api/boilerplates").then((response) => {
       this.boilerplates = response.data;
@@ -299,6 +300,7 @@ export default {
       var clientParams = {
         content: inputSection.content,
       };
+
       axios
         .patch("/api/sections/" + inputSection.id, clientParams)
         .then((response) => {
@@ -313,6 +315,7 @@ export default {
       var clientParams = {
         text: inputSection.text,
       };
+
       axios
         .patch("/api/sections/" + inputSection.id, clientParams)
         .then((response) => {
