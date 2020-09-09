@@ -25,15 +25,24 @@
           <div class="col-md-6 offset-md-3 mb-4">
             <h4 class="text-center">Grant Name: {{grant.title}}</h4>
             <h4 class="text-center">Purpose: {{grant.purpose}}</h4>
+            <h4 class="text-center">Organization Name: {{grant.organization_name}}</h4>
+
             <h4 class="text-center">Funding Organization: {{grant.funding_org_name}}</h4>
             <h4 class="text-center">Funding Organization RFP Webpage: {{grant.rfp_url}}</h4>        
             <h4 class="text-center">Deadline: {{grant.deadline}}</h4>
             <h4 class="text-center">Date Submitted: {{grant.submitted}}</h4>
             <h4 class="text-center">Organization: {{grant.organization_id}}</h4>
 
+            <h4>Sections</h4>
             <ul >
               <li v-for="section in grant.sections" :key="section.id">{{section}}</li>
             </ul>
+
+            <h4>Reports</h4>
+              <ul >
+                <li v-for="report in grant.reports" :key="report.id">{{report}}</li>
+              </ul>
+
             <div>
               <button v-on:click="showEditGrantFormMethod()">Edit Grant</button>
              </div>
@@ -199,6 +208,7 @@ export default {
       grant: {
         id: "",
         organization_id: "",
+        organization_name: "",
         title: "",
         funding_org_id: "",
         funding_org_url: "",
@@ -210,6 +220,7 @@ export default {
         purpose: "",
         errors: [],
         sections: [],
+        reports: [],
       },
       currentSection: { text: "" },
       currentBoilerplate: "",
@@ -218,27 +229,28 @@ export default {
       title: "",
       sort_order: "",
       showEditGrantForm: false,
+      errors: [],
     };
   },
   created: function () {
     axios.get("/api/grants/" + this.$route.params.id).then((response) => {
       this.grant = response.data;
       console.log(response.data);
-      console.log(this.grant);
-      console.log(this.grant.sections);
+      // console.log(this.grant);
+      // console.log(this.grant.sections);
       // this.currentSection = response.data.sections[0];
     });
     axios.get("/api/boilerplates").then((response) => {
       this.boilerplates = response.data;
-      console.log(response.data);
+      // console.log(response.data);
     });
     axios.get("/api/organizations/").then((response) => {
       this.organizations = response.data;
-      console.log(response.data);
+      // console.log(response.data);
     });
     axios.get("/api/funding_orgs/").then((response) => {
       this.funding_orgs = response.data;
-      console.log(response.data);
+      // console.log(response.data);
     });
   },
   methods: {

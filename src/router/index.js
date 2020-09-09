@@ -6,14 +6,18 @@ import Login from '../views/Login.vue';
 import Logout from '../views/Logout.vue';
 // import About from '../views/About.vue';
 
+import Dashboard from '../views/Dashboard.vue';
+
 import GrantsIndex from '../views/GrantsIndex.vue';
 import GrantsFinalizeShow from '../views/GrantsFinalizeShow.vue';
 import GrantsShow from '../views/GrantsShow.vue';
 // import GrantsEdit from '../views/GrantsEdit.vue';
 
-// import ReportsNew from '../views/ReportsNew.vue';
+import ReportsNew from '../views/ReportsNew.vue';
 import ReportsIndex from '../views/ReportsIndex.vue';
-// import ReportsShow from '../views/ReportsShow.vue';
+import ReportsShow from '../views/ReportsShow.vue';
+import ReportsFinalizeShow from '../views/ReportsFinalizeShow.vue';
+
 // import ReportsEdit from '../views/ReportsEdit.vue';
 
 import BiosIndex from '../views/BiosIndex.vue';
@@ -46,6 +50,8 @@ const routes = [
 
 	{ path: '/', name: 'root', component: Login },
 
+	{ path: '/dashboard', name: 'dashboard', component: Dashboard },
+
 	{ path: '/grants', name: 'grants-index', component: GrantsIndex },
 	{ path: '/grants/:id', name: 'grants-show', component: GrantsShow },
 	{
@@ -55,8 +61,14 @@ const routes = [
 	},
 
 	{ path: '/reports', name: 'reports-index', component: ReportsIndex },
-	// {path: '/reports/new', name: 'reports-new', component: ReportsNew},
-	// {path: '/reports/:id', name: 'reports-show', component: ReportsShow},
+	{ path: '/reports/new', name: 'reports-new', component: ReportsNew },
+	{ path: '/reports/:id', name: 'reports-show', component: ReportsShow },
+	{
+		path: '/reports/:id/finalize',
+		name: 'reports-finalize-show',
+		component: ReportsFinalizeShow,
+	},
+
 	// {path: '/reports/:id/edit', name: 'reports-edit', component: ReportsEdit},
 
 	{ path: '/categories', name: 'categories-index', component: CategoriesIndex },
