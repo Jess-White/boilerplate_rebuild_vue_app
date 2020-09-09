@@ -31,6 +31,8 @@
 
                                 <li><router-link to="/about">About</router-link></li>
 
+                                <li><router-link to="/dashboard">Dashboard</router-link></li>
+
                                 <li><router-link to="/grants">Grants</router-link></li>
 
                                 <li><router-link to="/boilerplates">Boilerplates</router-link></li>
@@ -141,27 +143,26 @@
 
 
 <script>
-var axios = require('axios')
+var axios = require("axios");
 
-  export default {
-    data: function() {
-      return {
-        userEmail: ""
-      };
-    },
-    created: function() {
-      const email = localStorage.getItem("userEmail");
-      if (email) {
-        this.userEmail = email;
-      }
-      const jwt = localStorage.getItem("jwt");
-      if (jwt) {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + jwt;
-      }
-      console.log(axios.defaults.headers)
+export default {
+  data: function () {
+    return {
+      userEmail: "",
+    };
+  },
+  created: function () {
+    const email = localStorage.getItem("userEmail");
+    if (email) {
+      this.userEmail = email;
     }
-  }
-
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      axios.defaults.headers.common["Authorization"] = "Bearer " + jwt;
+    }
+    //   console.log(axios.defaults.headers)
+  },
+};
 </script>
 
 

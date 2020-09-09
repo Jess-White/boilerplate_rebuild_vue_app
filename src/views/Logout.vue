@@ -30,13 +30,14 @@
 import axios from "axios";
 
 export default {
-  created: function() {
+  created: function () {
     delete axios.defaults.headers.common["Authorization"];
-    
-    this.$parent.userEmail = '';
+
+    // this.$parent.userEmail = "";
     localStorage.removeItem("jwt");
+    localStorage.removeItem("userEmail");
 
     this.$router.push("/login");
-  }
+  },
 };
 </script>
