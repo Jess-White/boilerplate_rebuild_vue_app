@@ -103,6 +103,8 @@
              </div>
           </div>
         </div>
+
+
           <div>
               <div class="card text-center section-editor">
               <div class="card-header">
@@ -115,22 +117,22 @@
                 </ul>
               </div>
                 <div class="card-body row">
-                <div class="col-md-3 offset-md-1">
-                  <h4 class="text-center mb-5">Choose a Boilerplate</h4>
-                <div>
-                <div class="form-group">
-                  <select class="form-control" v-model="currentBoilerplate" @change="handleChange">
-                    <option v-for="boilerplate in boilerplates" :value="boilerplate"> {{ boilerplate.text}} </option>
-                  </select>
-                </div>
-              </div>
-              <p class="text-justify">
-                {{ currentBoilerplate.text }}
-              </p>
-              <div>
-                <button class="btn btn-info m-2" v-on:click="addBoilerplate(currentSection)">Add Boilerplate</button>
-              </div>
-            </div>
+                  <div class="col-md-3 offset-md-1">
+                    <h4 class="text-center mb-5">Choose a Boilerplate</h4>
+                      <div>
+                        <div class="form-group">
+                          <select class="form-control" v-model="currentBoilerplate" @change="handleChange">
+                            <option v-for="boilerplate in boilerplates" :value="boilerplate"> {{ boilerplate.text}} </option>
+                          </select>
+                        </div>
+                      </div>
+                      <p class="text-justify">
+                      {{ currentBoilerplate.text }}
+                      </p>
+                      <!-- <div>
+                        <button class="btn btn-info m-2" v-on:click="addBoilerplate(currentSection)">Add Boilerplate</button>
+                      </div> -->
+                  </div>
             <div class="col-md-8">
               <form v-on:submit.prevent="createSection()">
                 <div class="form-group">
@@ -176,6 +178,54 @@
           </div>
         </div>
       </div>
+
+      <!-- start of bios -->
+
+      <div>
+        <div class="card text-center section-editor">
+        <div class="card-header">
+          <h1>Bios</h1>
+          <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item" v-for="bio in bios" >
+              <!-- <span class="nav-link tab-text" :class="{active: section == currentSection}" @click="currentSection = section">{{ section.display_category }}</span> -->
+              {{bio}}
+            </li>
+          </ul>
+        </div>
+          <div class="card-body row">
+            <div class="col-md-3 offset-md-1">
+              <h4 class="text-center mb-5">Choose a Bio</h4>
+                <div>
+                  <div class="form-group">
+                    <select class="form-control" v-model="currentBio" @change="handleBioChange">
+                      <option v-for="bio in bios" :value="bio"> {{ bio.first_name}} {{ bio.last_name }} </option>
+                    </select>
+                  </div>
+                </div>
+            </div>
+      <div class="col-md-8">
+        <form v-on:submit.prevent="createBioSection()">
+          <div class="form-group">
+            <label>Bio Title </label>
+            <input class="form-control" type="text" v-model="bioTitle">
+          </div>
+          <div class="form-group">
+            <label>Bio Text </label>
+            <textarea class="form-control" type="text" v-model="bioText"></textarea>
+            {{bioText}}
+          </div>
+          <div class="form-group">
+            <label>Section Sort Order </label>
+            <input class="form-control" type="integer" v-model="sort_order">
+          </div>
+          <input class="btn btn-info" type="submit" value="Add New Section">
+        </form>
+      </div>
+          </div>
+        </div>
+      </div>
+
+
       <div>
         <router-link class="btn btn-info m-2" v-bind:to="'/grants/' + grant.id + '/edit'">Edit</router-link>
         <button class="btn btn-info m-2" v-on:click="destroyGrant()">Delete</button>
@@ -224,12 +274,16 @@ export default {
       },
       currentSection: { text: "" },
       currentBoilerplate: "",
+      currentBio: "",
       boilerplates: [],
       text: "",
+      bioText: "",
+      bioTitle: "",
       title: "",
       sort_order: "",
       showEditGrantForm: false,
       errors: [],
+      bios: [],
     };
   },
   created: function () {
@@ -251,6 +305,10 @@ export default {
     axios.get("/api/funding_orgs/").then((response) => {
       this.funding_orgs = response.data;
       // console.log(response.data);
+    });
+    axios.get("/api/bios/").then((response) => {
+      this.bios = response.data;
+      console.log(response.data);
     });
   },
   methods: {
@@ -308,6 +366,27 @@ export default {
           this.status = error.response.status;
         });
     },
+    createBioSection: function () {
+      var clientParams = {
+        grant_id: this.grant.id,
+        title: this.bioTitle,
+        text: this.bioText,
+        sort_order: this.sort_order,
+      };
+      axios
+        .post("/api/sections/", clientParams)
+        .then((response) => {
+          this.grant.sections.push(response.data);
+          this.bioTitle = "";
+          this.bioText = "";
+          this.sort_order = "";
+          this.currentBio = "";
+        })
+        .catch((error) => {
+          this.errors = error.response.data.errors;
+          this.status = error.response.status;
+        });
+    },
     updateSection: function (inputSection) {
       var clientParams = {
         content: inputSection.content,
@@ -323,22 +402,25 @@ export default {
     handleChange: function () {
       this.text += this.currentBoilerplate.text;
     },
-    addBoilerplate: function (inputSection) {
-      var clientParams = {
-        text: inputSection.text,
-      };
-
-      axios
-        .patch("/api/sections/" + inputSection.id, clientParams)
-        .then((response) => {
-          console.log(response.data);
-          if (this.currentSection.text === null) {
-            this.currentSection.text = this.currentBoilerplate.text;
-          } else {
-            this.currentSection.text += this.currentBoilerplate.text;
-          }
-        });
+    handleBioChange: function () {
+      this.bioText += this.currentBio.text;
     },
+    // addBoilerplate: function (currentSection) {
+    //   var clientParams = {
+    //     text: inputSection.text,
+    //   };
+
+    //   axios
+    //     .patch("/api/sections/" + currentSection.id, clientParams)
+    //     .then((response) => {
+    //       console.log(response.data);
+    //       if (this.currentSection.text === null) {
+    //         this.currentSection.text = this.currentBoilerplate.text;
+    //       } else {
+    //         this.currentSection.text += this.currentBoilerplate.text;
+    //       }
+    //     });
+    // },
     finalizeGrant: function () {
       axios.get("/api/grants/" + this.$route.params.id).then((response) => {
         this.$router.push("/grants/" + this.$route.params.id + "/finalize");
