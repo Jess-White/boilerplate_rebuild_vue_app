@@ -70,7 +70,7 @@ export default {
           localStorage.setItem("userEmail", response.data.email);
 
 
-          this.$router.push("/grants-index");
+          this.$router.push("/grants");
         })
         .catch(error => {
           this.errors = ["Invalid email or password."];
