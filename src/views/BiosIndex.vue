@@ -48,7 +48,7 @@
 
          <div class="form-group">
           <label>Bio Text: </label>
-          <input class="form-control" type="text" v-model="bio">
+          <input class="form-control" type="text" v-model="text">
         </div>
 
         <div class="form-group">
@@ -97,49 +97,51 @@
 </style>
 
 <script>
-  var axios = require("axios");
+var axios = require("axios");
 
-  export default {
-    data: function() {
-      return {
-        id: "",
-        firstName: "",
-        lastName: "",
-        title: "",
-        bio: "",
-        organizationId: "",
-        errors: [],
-        bios: []
-      };
-    },
-  created: function() {
-    axios
-    .get("/api/bios")
-    .then(response => {
+export default {
+  data: function () {
+    return {
+      id: "",
+      firstName: "",
+      lastName: "",
+      title: "",
+      text: "",
+      organizationId: "",
+      errors: [],
+      bios: [],
+    };
+  },
+  created: function () {
+    axios.get("/api/bios").then((response) => {
       this.bios = response.data;
     });
   },
   methods: {
-      createBio: function() {
-        var clientParams = {
+    createBio: function () {
+      var clientParams = {
         first_name: this.firstName,
         last_name: this.lastName,
         title: this.title,
-        bio: this.bio,
-        organization_id: this.organizationId
+        text: this.text,
+        organization_id: this.organizationId,
       };
 
       axios
         .post("/api/bios/", clientParams)
-        .then(response => {
-          this.$router.push("/bios");
-        }).catch(error => {
-          this.errors = error.response.data.
-            errors;
+        .then((response) => {
+          // this.$router.push("/bios");
+          this.bios.push(response.data);
+          (this.firstName = ""),
+            (this.lastName = ""),
+            (this.title = ""),
+            (this.text = ""),
+            (this.organizationId = "");
+        })
+        .catch((error) => {
+          this.errors = error.response.data.errors;
         });
-    }
-  }
+    },
+  },
 };
-
-
 </script>

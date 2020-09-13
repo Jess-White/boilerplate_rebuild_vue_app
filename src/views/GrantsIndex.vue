@@ -50,7 +50,7 @@
 
         <div class="form-group">
           <label>Purpose </label>
-          <input class="form-control" type="text" v-model="deadline">
+          <input class="form-control" type="text" v-model="purpose">
         </div>
 
         <div class="form-group col-md-6">
@@ -107,131 +107,126 @@
 </style>
 
 <script>
-  var axios = require("axios");
+var axios = require("axios");
 
-  export default {
-    data: function() {
-      return {
-        grants: [],
-        organizations: [],
-        funding_orgs: []
-      };
-    },
-  created: function() {
+export default {
+  data: function () {
+    return {
+      grants: [],
+      organizations: [],
+      funding_orgs: [],
+      errors: [],
+      title: "",
+      rfp_url: "",
+      deadline: "",
+      purpose: "",
+      organization_id: "",
+      funding_org_id: "",
+    };
+  },
+  created: function () {
     axios
       .get("/api/grants")
-      .then(response => {
+      .then((response) => {
         this.grants = response.data;
       })
-      .catch(error => {
+      .catch((error) => {
         if (error.response.status === 401) {
           this.$router.push("/login/");
-        };
+        }
         if (error.response.status === 500) {
-          alert("server error")
+          alert("server error");
         }
       });
-    axios
-    .get("/api/organizations/")
-    .then(response => {
+    axios.get("/api/organizations/").then((response) => {
       this.organizations = response.data;
       console.log(response.data);
     });
-    axios
-    .get("/api/funding_orgs/")
-    .then(response => {
+    axios.get("/api/funding_orgs/").then((response) => {
       this.funding_orgs = response.data;
       console.log(response.data);
     });
   },
   methods: {
-      createGrant: function() {
-          var clientParams = {
-          title: this.title,
-          organization_id: this.organization_id,
-          funding_org_id: this.funding_org_id,
-          rfp_url: this.rfp_url,
-          deadine: this.deadline,
-          purpose: this.purpose
-        };
-        axios
-          .post("/api/grants/", clientParams)
-          .then(response => {
-            this.grants.push(response.data);
-            this.title = "";
-            this.organization_id = "";
-            this.funding_org_id = "";
-            this.rfp_url = "";
-            this.deadline = "";
-            this.purpose = "";
-          }).catch(error => {
-            this.errors = error.response.data.
-              errors;
-            this.status = error.response.status;
-          });
-        },
-      destroyGrant: function() {
-        axios
-          .delete("/api/grants/" + this.$route.params.id)
-          .then(response => {
-            this.$router.push("/");
-          });
-      },
-      updateSection: function(inputSection) {
-        var clientParams = { 
-          content: inputSection.content
-        };
-
-        axios
-          .patch("/api/sections/" + inputSection.id, clientParams)
-          .then(response => {
-            console.log(response.data);
-            this.currentSection.changed = false;
-          });
-      },
-      addBoilerplate: function(inputSection) {
-        var clientParams = {
-          content: inputSection.content
-        };
-
-        axios
-          .patch("/api/sections/" + inputSection.id, clientParams)
-          .then(response => {
-            console.log(response.data);
-            this.currentSection.content = this.currentSection.content + this.currentBoilerplate.boilerplate_text;
-          });
-      },
-      finalizeGrant: function() {
-        axios 
-          .get("/api/grants/" + this.$route.params.id)
-          .then(response => {
-            this.$router.push("/grants/" + this.$route.params.id + "/finalize");
-          });
-      },
-      printableGrant: function() {
-        axios 
-          .get("/api/grants/" + this.$route.params.id)
-          .then(response => {
-            this.$router.push("/grants/" + this.$route.params.id + "/printable");
-          });
-      },
-      createPDF: function() {
-        var doc = new jsPDF();
-          doc.fromHTML($('#content').html(), 20, 20, {'width': 500});
-          // "elementHandlers": specialElementHandlers
-          doc.save('grant.pdf');
-      }
-    },
-    watch:  {
-      $route: function() {
-        axios
-        .get("/api/grants/" + this.$route.params.id)
-        .then(response => {
-          this.grant = response.data;
+    createGrant: function () {
+      var clientParams = {
+        title: this.title,
+        organization_id: this.organization_id,
+        funding_org_id: this.funding_org_id,
+        rfp_url: this.rfp_url,
+        deadine: this.deadline,
+        purpose: this.purpose,
+      };
+      axios
+        .post("/api/grants/", clientParams)
+        .then((response) => {
+          this.grants.push(response.data);
+          this.title = "";
+          this.organization_id = "";
+          this.funding_org_id = "";
+          this.rfp_url = "";
+          this.deadline = "";
+          this.purpose = "";
+        })
+        .catch((error) => {
+          this.errors = error.response.data.errors;
+          this.status = error.response.status;
         });
-      }
-  }
+    },
+    destroyGrant: function () {
+      axios.delete("/api/grants/" + this.$route.params.id).then((response) => {
+        this.$router.push("/");
+      });
+    },
+    updateSection: function (inputSection) {
+      var clientParams = {
+        content: inputSection.content,
+      };
+
+      axios
+        .patch("/api/sections/" + inputSection.id, clientParams)
+        .then((response) => {
+          console.log(response.data);
+          this.currentSection.changed = false;
+        });
+    },
+    addBoilerplate: function (inputSection) {
+      var clientParams = {
+        content: inputSection.content,
+      };
+
+      axios
+        .patch("/api/sections/" + inputSection.id, clientParams)
+        .then((response) => {
+          console.log(response.data);
+          this.currentSection.content =
+            this.currentSection.content +
+            this.currentBoilerplate.boilerplate_text;
+        });
+    },
+    finalizeGrant: function () {
+      axios.get("/api/grants/" + this.$route.params.id).then((response) => {
+        this.$router.push("/grants/" + this.$route.params.id + "/finalize");
+      });
+    },
+    printableGrant: function () {
+      axios.get("/api/grants/" + this.$route.params.id).then((response) => {
+        this.$router.push("/grants/" + this.$route.params.id + "/printable");
+      });
+    },
+    createPDF: function () {
+      var doc = new jsPDF();
+      doc.fromHTML($("#content").html(), 20, 20, { width: 500 });
+      // "elementHandlers": specialElementHandlers
+      doc.save("grant.pdf");
+    },
+  },
+  watch: {
+    $route: function () {
+      axios.get("/api/grants/" + this.$route.params.id).then((response) => {
+        this.grant = response.data;
+      });
+    },
+  },
 };
-
-
 </script>
