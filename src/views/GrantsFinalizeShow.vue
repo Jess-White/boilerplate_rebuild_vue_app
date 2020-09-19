@@ -45,16 +45,7 @@
                     <h5 class="card-title">{{ section.id }}</h5>
                     <h5 class="card-title">{{ section.title }}</h5>
                     <h5 class="card-title">{{ section.text }}</h5>
-                    <div class="form-group">
-                      <textarea 
-                        class="form-control" 
-                        v-model="section.text" 
-                        
-                        rows="7"
-                      >
-                      </textarea>
-                    </div>
-
+                    <h5 class="card-title">{{countWords(section.text)}}</h5>
                     <div>
                       <button v-on:click="showEditSectionFormMethod(section)">Edit Section</button>
                      </div>
@@ -87,8 +78,11 @@
 
                             <div class="form-group">
                               <label>Section Text: </label>
-                              <input class="form-control" type="text" v-model="section.text">
+                              <textarea class="form-control" 
+                              rows="7"type="text" v-model="section.text"></textarea>
                             </div>
+
+                            <h5 class="card-title">Word Count: {{countWords(section.text)}}</h5>
 
                             <div class="form-group">
                               <label>Section Sort Order: </label>
@@ -170,6 +164,7 @@ export default {
       id: "",
       sort_order: "",
       text: "",
+      wordcount: "",
       title: "",
     };
   },
@@ -203,6 +198,7 @@ export default {
       var clientParams = {
         title: section.title,
         text: section.text,
+        wordcount: section.text.split(" ").length,
         sort_order: section.sort_order,
       };
 
@@ -246,6 +242,13 @@ export default {
     showEditSectionFormMethod: function (section) {
       section.showEditSectionForm = !section.showEditSectionForm;
     },
+    countWords: function (string) { 
+      if (string) {
+        return (string.split(" ").length);
+          } else {
+            return 0; 
+          }
+    }
   },
   watch: {
     $route: function () {

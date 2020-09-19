@@ -44,18 +44,27 @@
           </div>
 
           <div class="form-group">
-            <label>Wordcount: </label>
-            <input class="form-control" type="text" v-model="wordcount">
+            <p>Word Count: </p>
+            {{countWords(text)}}
+            <!-- <input class="form-control" type="text" v-bind:value="wordcount"> -->
           </div>
 
-          <div class="form-group">
-            <label>Category: </label>
-            <input class="form-control" type="text" v-model="categoryId">
+          <div class="form-group col-md-6">
+            Category
+            <select v-model="category_id">
+              <option value="">Select a Category</option>
+              <option v-bind:value="category.id" v-for="category in categories">{{category.name}}
+              </option>
+            </select>
           </div>
 
-          <div class="form-group">
-            <label>Organization: </label>
-            <input class="form-control" type="text" v-model="organizationId">
+          <div class="form-group col-md-6">
+            Organization
+            <select v-model="organization_id">
+              <option value="">Select an Organization</option>
+              <option v-bind:value="organization.id" v-for="organization in organizations">{{organization.name}}
+              </option>
+            </select>
           </div>
 
           <input class="btn btn-info m-4" type="submit" value="Add New Boilerplate">
@@ -93,8 +102,8 @@
     data: function () {
       return {
         id: "",
-        organizationId: "",
-        categoryId: "",
+        organization_id: "",
+        category_id: "",
         title: "",
         text: "",
         wordcount: "",
@@ -102,6 +111,8 @@
 
         currentBoilerplate: {},
         boilerplates: [],
+        organizations: [],
+        categories: [],
       };
     },
     created: function () {
@@ -112,25 +123,45 @@
       axios.get("/api/users").then((response) => {
         this.users = response.data;
       });
+      axios.get("/api/organizations/").then((response) => {
+        this.organizations = response.data;
+        console.log(response.data);
+      });
+      axios.get("/api/categories/").then((response) => {
+        this.categories = response.data;
+        console.log(response.data);
+      });
     },
     methods: {
       createBoilerplate: function () {
         var clientParams = {
-          organization_id: this.organizationId,
-          category_id: this.categoryId,
+          organization_id: this.organization_id,
+          category_id: this.category_id,
           title: this.title,
           text: this.text,
-          wordcount: this.wordcount,
+          wordcount: this.text.split(" ").length
         };
         axios
           .post("/api/boilerplates/", clientParams)
           .then((response) => {
-            this.$router.push("/boilerplates");
+            this.boilerplates.push(response.data);
+            this.title = "";
+            this.category_id = "";
+            this.organization_id = "";
+            this.wordcount = "";
+            this.text = "";
           })
           .catch((error) => {
             this.errors = error.response.data.errors;
           });
+      },
+      countWords: function (string) { 
+          if (string) {
+            return (string.split(" ").length);
+          } else {
+            return 0; 
+          }
+        }
       }
     }
-  }
 </script>

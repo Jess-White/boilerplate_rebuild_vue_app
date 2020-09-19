@@ -69,7 +69,6 @@ export default {
 
           this.$parent.userEmail = response.data.email;
           localStorage.setItem("userEmail", response.data.email);
-
           this.$router.push("/dashboard");
         })
         .catch((error) => {
