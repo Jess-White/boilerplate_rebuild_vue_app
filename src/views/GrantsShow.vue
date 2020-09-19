@@ -146,6 +146,11 @@
                   {{title}}
                 </div>
                 <div class="form-group">
+                  <p>Word Count: </p>
+                  {{countWords(text)}}
+                  <!-- <input class="form-control" type="text" v-bind:value="wordcount"> -->
+                </div>
+                <div class="form-group">
                   <label>Section Sort Order </label>
                   <input class="form-control" type="integer" v-model="sort_order">
                 </div>
@@ -280,6 +285,7 @@ export default {
       bioText: "",
       bioTitle: "",
       title: "",
+      wordcount: "",
       sort_order: "",
       showEditGrantForm: false,
       errors: [],
@@ -351,6 +357,7 @@ export default {
         grant_id: this.grant.id,
         title: this.title,
         text: this.text,
+        wordcount: this.text.split(" ").length,
         sort_order: this.sort_order,
       };
       axios
@@ -359,6 +366,7 @@ export default {
           this.grant.sections.push(response.data);
           this.title = "";
           this.text = "";
+          this.wordcount = "";
           this.sort_order = "";
         })
         .catch((error) => {
@@ -442,6 +450,13 @@ export default {
           console.log((this.status = error.response.status));
         });
     },
+    countWords: function (string) { 
+        if (string) {
+          return (string.split(" ").length);
+        } else {
+          return 0; 
+        }
+    }
   },
   watch: {
     $route: function () {

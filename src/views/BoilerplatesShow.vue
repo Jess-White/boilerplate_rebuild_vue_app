@@ -26,6 +26,7 @@
        <div class="col-md-6">
         <h4 class="text-center">Title: {{boilerplate.title}}</h4>
         <h4 class="text-center">Text: {{boilerplate.text}}</h4>
+        <h4 class="text-center">Word Count: {{countWords(boilerplate.text)}}</h4>
         <h4 class="text-center">Organization: {{boilerplate.organization.name}}</h4>
         <h4 class="text-center">Category: {{boilerplate.category.name}}</h4>
        </div>
@@ -90,6 +91,7 @@ var axios = require('axios');
           text: "",
           organizationId: "",
           categoryId: "",
+          wordcount: "",
           errors: [] 
         },
         showEditBoilerplateForm: false
@@ -116,7 +118,7 @@ var axios = require('axios');
           category_id: this.boilerplate.category_id,
           title: this.boilerplate.title,
           text: this.boilerplate.text,
-          wordcount: this.boilerplate.wordcount
+          wordcount: this.boilerplate.text.split(" ").length
         };
 
           const jwt = localStorage.getItem("jwt")
@@ -137,6 +139,13 @@ var axios = require('axios');
           },
         showEditBoilerplateFormMethod: function () {
           this.showEditBoilerplateForm = !this.showEditBoilerplateForm;
+        },
+        countWords: function (string) { 
+          if (string) {
+            return (string.split(" ").length);
+          } else {
+            return 0; 
+          }
         }
     },
     watch: {

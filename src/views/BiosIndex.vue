@@ -52,8 +52,18 @@
         </div>
 
         <div class="form-group">
-          <label>Organization: </label>
-          <input class="form-control" type="text" v-model="organizationId">
+            <p>Word Count: </p>
+            {{countWords(text)}}
+            <!-- <input class="form-control" type="text" v-bind:value="wordcount"> -->
+          </div>
+
+        <div class="form-group col-md-6">
+          Organization
+          <select v-model="organization_id">
+            <option value="">Select an Organization</option>
+            <option v-bind:value="organization.id" v-for="organization in organizations">{{organization.name}}
+            </option>
+          </select>
         </div>
         
         <input class="btn btn-info" type="submit" value="Add New Bio">
@@ -107,15 +117,21 @@ export default {
       lastName: "",
       title: "",
       text: "",
-      organizationId: "",
+      organization_id: "",
+      wordcount: "",
       errors: [],
       bios: [],
+      organizations: []
     };
   },
   created: function () {
     axios.get("/api/bios").then((response) => {
       this.bios = response.data;
     });
+    axios.get("/api/organizations/").then((response) => {
+        this.organizations = response.data;
+        console.log(response.data);
+      });
   },
   methods: {
     createBio: function () {
@@ -124,7 +140,8 @@ export default {
         last_name: this.lastName,
         title: this.title,
         text: this.text,
-        organization_id: this.organizationId,
+        wordcount: this.text.split(" ").length,
+        organization_id: this.organization_id,
       };
 
       axios
@@ -132,16 +149,24 @@ export default {
         .then((response) => {
           // this.$router.push("/bios");
           this.bios.push(response.data);
-          (this.firstName = ""),
-            (this.lastName = ""),
-            (this.title = ""),
-            (this.text = ""),
-            (this.organizationId = "");
+          this.firstName = "";
+            this.lastName = "";
+            this.title = "";
+            this.text = "";
+            this.wordcount = "";
+            this.organization_id = "";
         })
         .catch((error) => {
           this.errors = error.response.data.errors;
         });
     },
+    countWords: function (string) { 
+          if (string) {
+            return (string.split(" ").length);
+          } else {
+            return 0; 
+          }
+        }
   },
 };
 </script>

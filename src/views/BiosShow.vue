@@ -27,6 +27,7 @@
         <h4 class="text-center">Name: {{bio.first_name}} {{bio.last_name}}</h4>
         <h4 class="text-center">Title: {{bio.title}}</h4>
         <h4 class="text-center">Bio: {{bio.text}}</h4>
+        <h4 class="text-center">Word Count: {{countWords(bio.text)}}</h4>
         <h4 class="text-center">Organization: {{bio.organization_id}}</h4>
        </div>
 
@@ -96,6 +97,7 @@ var axios = require('axios');
           lastName: "",
           text: "",
           title: "",
+          wordcount: "",
           errors: [] 
         },
         showEditBioForm: false
@@ -122,6 +124,7 @@ var axios = require('axios');
           last_name: this.bio.last_name,
           title: this.bio.title,
           text: this.bio.text,
+          wordcount: this.bio.text.split(" ").length,
           organization_id: this.bio.organization_id
         };
 
@@ -143,6 +146,13 @@ var axios = require('axios');
           },
         showEditBioFormMethod: function() {
           this.showEditBioForm = !this.showEditBioForm;
+        },
+        countWords: function (string) { 
+          if (string) {
+            return (string.split(" ").length);
+          } else {
+            return 0; 
+          }
         }
     },
     watch: {
