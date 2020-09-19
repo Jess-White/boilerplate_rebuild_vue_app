@@ -26,10 +26,11 @@
       <div class="row">
         <div class="col-md-6 offset-md-3 mb-4">
           <h3>Report</h3>
-          <h4 class="text-center">Grant Id: {{report.grant_id}}</h4>
           <h4 class="text-center">Report Name: {{report.title}}</h4>
           <h4 class="text-center">Deadline: {{report.deadline}}</h4>
           <h4 class="text-center">Submitted: {{report.submitted}}</h4>
+          <h4 class="text-center">Total Word Count: {{wordCountTotal}}</h4>
+
         </div>
       </div>
     </div>
@@ -37,10 +38,10 @@
     <div class="card-header">
       <div class="nav-item" v-for="report_section in report.report_sections" >
           <div class="card-body">
-            <h5 class="card-title">{{ report_section.id }}</h5>
             <h5 class="card-title">{{ report_section.title }}</h5>
             <h5 class="card-title">{{ report_section.text }}</h5>
-            <h5 class="card-title">{{ report_section.sort_order }}</h5>
+            <h5 class="card-title">Word Count: {{ countWords(report_section.text) }}</h5>
+            <h5 class="card-title">Sort Order: {{ report_section.sort_order }}</h5>
           
 
             <div>
@@ -78,6 +79,8 @@
                       <input class="form-control" type="text" v-model="report_section.text">
                     </div>
 
+                    <h5 class="card-title">Word Count: {{countWords(report_section.text)}}</h5>
+
                     <div class="form-group">
                       <label>Section Sort Order: </label>
                       <input class="form-control" type="text" v-model="report_section.sort_order">
@@ -110,12 +113,16 @@ export default {
       report: {},
       boilerplates: [],
       errors: [],
+      wordCountTotal: 0,
     };
   },
   created: function () {
     axios.get("/api/reports/" + this.$route.params.id).then((response) => {
       response.data.report_sections.forEach((report_section) => {
         report_section.showEditReportSectionForm = false;
+        this.wordCountTotal += report_section.wordcount;
+        console.log(response.data);
+        console.log(this.wordCountTotal);
       });
       this.report = response.data;
     });
@@ -129,6 +136,7 @@ export default {
       var clientParams = {
         title: report_section.title,
         text: report_section.text,
+        wordcount: report_section.text.split(" ").length,
         sort_order: report_section.sort_order,
       };
 
@@ -142,6 +150,27 @@ export default {
     showEditReportSectionFormMethod: function (report_section) {
       report_section.showEditReportSectionForm = !report_section.showEditReportSectionForm;
     },
+    countWords: function (string) {
+      // var wordCountTotal = 0;
+      // if (string) {
+      //   wordCountTotal += string.split(" ").length;
+      // }
+      if (string) {
+        return string.split(" ").length;
+      } else {
+        return 0;
+      }
+    },
+    // wordCountTotal: function () {
+    //   const total = 0;
+    //   console.log(this.report.report_sections);
+    //   this.report.report_sections.forEach((report_section) => {
+    //     console.log(report_section);
+    //   });
+    // },
+    // const totalYears = inventors.reduce((total, inventor) => {
+    //   return total + (inventor.passed - inventor.year);
+    // }, 0);
   },
 };
 </script>

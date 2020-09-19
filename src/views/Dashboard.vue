@@ -78,6 +78,7 @@ export default {
         .then((response) => {
           this.currentUser.organization_users.push(response.data);
           this.organization_id = "";
+          console.log(response);
         })
         .catch((error) => {
           this.errors = error.response.data.errors;

@@ -41,7 +41,7 @@
             <h4>Reports</h4>
               <ul >
                 <li v-for="report in grant.reports" :key="report.id">{{report}}</li>
-              </ul>
+              </ul>  
 
             <div>
               <button v-on:click="showEditGrantFormMethod()">Edit Grant</button>
@@ -108,11 +108,11 @@
           <div>
               <div class="card text-center section-editor">
               <div class="card-header">
-                <h1>Method One</h1>
+                <h1>Add Sections</h1>
                 <ul class="nav nav-tabs card-header-tabs">
                   <li class="nav-item" v-for="section in grant.sections" >
                     <!-- <span class="nav-link tab-text" :class="{active: section == currentSection}" @click="currentSection = section">{{ section.display_category }}</span> -->
-                    {{section}}
+                    <!-- {{section}} -->
                   </li>
                 </ul>
               </div>
@@ -126,9 +126,9 @@
                           </select>
                         </div>
                       </div>
-                      <p class="text-justify">
+                      <!-- <p class="text-justify">
                       {{ currentBoilerplate.text }}
-                      </p>
+                      </p> -->
                       <!-- <div>
                         <button class="btn btn-info m-2" v-on:click="addBoilerplate(currentSection)">Add Boilerplate</button>
                       </div> -->
@@ -142,8 +142,8 @@
                 <div class="form-group">
                   <label>Section Text </label>
                   <textarea class="form-control" type="text" v-model="text"></textarea>
-                  {{text}}
-                  {{title}}
+                  <!-- {{text}}
+                  {{title}} -->
                 </div>
                 <div class="form-group">
                   <p>Word Count: </p>
@@ -189,11 +189,11 @@
       <div>
         <div class="card text-center section-editor">
         <div class="card-header">
-          <h1>Bios</h1>
+          <h1>Add Bio Sections</h1>
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item" v-for="bio in bios" >
               <!-- <span class="nav-link tab-text" :class="{active: section == currentSection}" @click="currentSection = section">{{ section.display_category }}</span> -->
-              {{bio}}
+              <!-- {{bio}} -->
             </li>
           </ul>
         </div>
@@ -220,15 +220,22 @@
             {{bioText}}
           </div>
           <div class="form-group">
+                  <p>Word Count: </p>
+                  {{countWords(bioText)}}
+                  <!-- <input class="form-control" type="text" v-bind:value="wordcount"> -->
+                </div>
+          <div class="form-group">
             <label>Section Sort Order </label>
             <input class="form-control" type="integer" v-model="sort_order">
           </div>
-          <input class="btn btn-info" type="submit" value="Add New Section">
+          <input class="btn btn-info" type="submit" value="Add Bio Section">
         </form>
       </div>
           </div>
         </div>
       </div>
+    
+
 
 
       <div>
@@ -379,6 +386,7 @@ export default {
         grant_id: this.grant.id,
         title: this.bioTitle,
         text: this.bioText,
+        wordcount: this.bioText.split(" ").length,
         sort_order: this.sort_order,
       };
       axios
@@ -388,6 +396,7 @@ export default {
           this.bioTitle = "";
           this.bioText = "";
           this.sort_order = "";
+          this.wordcount = "";
           this.currentBio = "";
         })
         .catch((error) => {
@@ -450,13 +459,13 @@ export default {
           console.log((this.status = error.response.status));
         });
     },
-    countWords: function (string) { 
-        if (string) {
-          return (string.split(" ").length);
-        } else {
-          return 0; 
-        }
-    }
+    countWords: function (string) {
+      if (string) {
+        return string.split(" ").length;
+      } else {
+        return 0;
+      }
+    },
   },
   watch: {
     $route: function () {

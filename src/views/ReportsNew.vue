@@ -63,7 +63,7 @@
           <input class="form-control" type="text" v-model="submitted">
         </div>
 
-        <input class="btn btn-info" type="submit" value="Add New Grant">
+        <input class="btn btn-info" type="submit" value="Add New Report">
       </form>
     </div>
      
