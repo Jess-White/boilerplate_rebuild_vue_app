@@ -86,7 +86,7 @@
     <div>
       <div class="card text-center section-editor">
       <div class="card-header">
-        <h1>Add Sections</h1>
+        <h1>Add Report Sections</h1>
         <!-- <ul class="nav nav-tabs card-header-tabs">
           <li class="nav-item" v-for="section in grant.sections" >
             <span class="nav-link tab-text" :class="{active: section == currentSection}" @click="currentSection = section">{{ section.display_category }}</span>
@@ -104,9 +104,9 @@
           </select>
         </div>
       </div>
-      <p class="text-justify">
+      <!-- <p class="text-justify">
         {{ currentBoilerplate.text }}
-      </p>
+      </p> -->
       <div>
         <button class="btn btn-info m-2" v-on:click="addBoilerplate(currentSection)">Add Boilerplate</button>
       </div>
@@ -120,9 +120,10 @@
         <div class="form-group">
           <label>Report Section Text </label>
           <textarea class="form-control" type="text" v-model="text"></textarea>
-          {{text}}
-          {{title}}
+          <!-- {{text}}
+          {{title}} -->
         </div>
+        <h5 class="card-title">Word Count: {{countWords(text)}}</h5>
         <div class="form-group">
           <label>Section Sort Order </label>
           <input class="form-control" type="integer" v-model="sort_order">
@@ -174,6 +175,7 @@ export default {
       currentBoilerplate: "",
       title: "",
       text: "",
+      wordcount: "",
       sort_order: "",
       showEditReportForm: false,
       errors: [],
@@ -198,6 +200,7 @@ export default {
         report_id: this.report.id,
         title: this.title,
         text: this.text,
+        wordcount: this.text.split(" ").length,
         sort_order: this.sort_order,
       };
       axios
@@ -206,6 +209,7 @@ export default {
           this.report.report_sections.push(response.data);
           this.title = "";
           this.text = "";
+          this.wordcount = "";
           this.sort_order = "";
           console.log(response.data);
         })
@@ -258,6 +262,13 @@ export default {
     },
     showEditReportFormMethod: function () {
       this.showEditReportForm = !this.showEditReportForm;
+    },
+    countWords: function (string) {
+      if (string) {
+        return string.split(" ").length;
+      } else {
+        return 0;
+      }
     },
   },
 };

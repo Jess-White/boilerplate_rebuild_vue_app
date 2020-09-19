@@ -65,7 +65,7 @@
 
                       <div class="container my-4">
                         <div class="row">
-                          <form class="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1" v-on:submit.prevent="updateSection()">
+                          <form class="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1" v-on:submit.prevent="updateSection(section)">
                             <h1 class="text-center mb-5">Edit Section</h1>
                             <ul>
                               <li class="text-danger" v-for="error in errors">{{ error }}</li>
@@ -89,8 +89,8 @@
                               <input class="form-control" type="text" v-model="section.sort_order">
                             </div>
 
-                            <button class="btn btn-info m-2" v-on:click="updateSection(section)">Save Section</button>
-
+                            <button class="btn btn-info m-2">Save Section</button>
+        
                           </form>
 
                     </div>
@@ -108,11 +108,11 @@
 
           <button class="btn btn-info m-2" v-on:click="destroyGrant()">Delete</button>
 
-          <button class="btn btn-info m-2" v-on:click="updateAllSections()">Save Grant</button>
+          <!-- <button class="btn btn-info m-2" v-on:click="updateAllSections()">Save Grant</button> -->
 
           <router-link class="btn btn-info m-2" v-bind:to="'/grants/' + grant.id + '/printable'">Printable Grant</router-link>
 
-          <button class="btn btn-info m-2" v-on:click="reuseGrant()">Reuse Grant</button>
+          <!-- <button class="btn btn-info m-2" v-on:click="reuseGrant()">Reuse Grant</button> -->
 
           <router-link class="btn btn-info m-2" v-bind:to="'/reports/new'">Generate Report</router-link>
 
@@ -166,6 +166,7 @@ export default {
       text: "",
       wordcount: "",
       title: "",
+      errors: [],
     };
   },
   created: function () {
@@ -209,30 +210,30 @@ export default {
         });
     },
 
-    updateAllSections: function () {
-      this.grant.sections.forEach((section) => {
-        this.updateSection(section);
-      });
+    // updateAllSections: function () {
+    //   this.grant.sections.forEach((section) => {
+    //     this.updateSection(section);
+    //   });
 
-      this.$router.push("/grants");
-    },
+    //   this.$router.push("/grants");
+    // },
 
-    finalizeGrant: function () {
-      axios.get("/api/grants/" + this.$route.params.id).then((response) => {
-        this.$router.push("/grants/" + this.$route.params.id + "/finalize");
-      });
-    },
-    reuseGrant: function () {
-      axios
-        .get("/api/grants/" + this.$route.params.id + "/copy")
-        .then((response) => {
-          this.$router.push("/grants/" + response.data.id + "/finalize");
-        })
-        .catch((error) => {
-          console.log(error.response.data.errors);
-          console.log((this.status = error.response.status));
-        });
-    },
+    // finalizeGrant: function () {
+    //   axios.get("/api/grants/" + this.$route.params.id).then((response) => {
+    //     this.$router.push("/grants/" + this.$route.params.id + "/finalize");
+    //   });
+    // },
+    // reuseGrant: function () {
+    //   axios
+    //     .get("/api/grants/" + this.$route.params.id + "/copy")
+    //     .then((response) => {
+    //       this.$router.push("/grants/" + response.data.id + "/finalize");
+    //     })
+    //     .catch((error) => {
+    //       console.log(error.response.data.errors);
+    //       console.log((this.status = error.response.status));
+    //     });
+    // },
     // createPDF: function() {
     //   var doc = new jsPDF();
     //   doc.fromHTML(document.getElementById('pdfMaterials'), 20, 20);
@@ -242,13 +243,13 @@ export default {
     showEditSectionFormMethod: function (section) {
       section.showEditSectionForm = !section.showEditSectionForm;
     },
-    countWords: function (string) { 
+    countWords: function (string) {
       if (string) {
-        return (string.split(" ").length);
-          } else {
-            return 0; 
-          }
-    }
+        return string.split(" ").length;
+      } else {
+        return 0;
+      }
+    },
   },
   watch: {
     $route: function () {
