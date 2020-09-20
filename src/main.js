@@ -3,6 +3,7 @@ import axios from 'axios';
 import BootstrapVue from 'bootstrap-vue/dist/bootstrap-vue.esm';
 import App from './App.vue';
 import router from './router';
+// import jspdf from 'jspdf';
 
 // import "bootstrap";
 // import "bootstrap/dist/css/bootstrap.min.css";

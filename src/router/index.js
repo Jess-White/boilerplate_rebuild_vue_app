@@ -5,6 +5,7 @@ import UsersNew from '../views/UsersNew.vue';
 import Login from '../views/Login.vue';
 import Logout from '../views/Logout.vue';
 // import About from '../views/About.vue';
+import GrantsPrintable from '../views/GrantsPrintable.vue';
 
 import Dashboard from '../views/Dashboard.vue';
 
@@ -58,6 +59,11 @@ const routes = [
 		path: '/grants/:id/finalize',
 		name: 'grants-finalize-show',
 		component: GrantsFinalizeShow,
+	},
+	{
+		path: '/grants/:id/printable',
+		name: 'grants-printable',
+		component: GrantsPrintable,
 	},
 
 	{ path: '/reports', name: 'reports-index', component: ReportsIndex },
